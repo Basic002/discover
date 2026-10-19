@@ -26,6 +26,9 @@ function App() {
           setUser(response.data.user || response.data.data);
         }
       } catch (error) {
+        if (error.response?.status === 401) {
+          try { localStorage.removeItem('musical_app_token'); } catch (e) {}
+        }
         console.log("Aucune session active. Utilisateur non connecté.");
       } finally {
         setLoading(false); // On arrête le chargement quoi qu'il arrive
@@ -73,8 +76,8 @@ function App() {
           {/* Login a besoin de setUser pour enregistrer l'utilisateur dans l'état après la connexion */}
           <Route path="/login" element={<Login setUser={setUser} />} />
           
-          {/* Register n'a généralement pas besoin de props, sauf si tu connectes l'utilisateur automatiquement après inscription */}
-          <Route path="/register" element={<Register />} />
+          {/* Register avec connexion automatique ou redirection fluide */}
+          <Route path="/register" element={<Register setUser={setUser} />} />
           
           {/* Favorites aura besoin de l'id de l'utilisateur pour requêter ses favoris */}
           <Route path="/favorites" element={<Favorites user={user} setUser={setUser} />} />

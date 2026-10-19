@@ -70,10 +70,12 @@ const Profile = ({ user: appUser, setUser: setAppUser }) => {
     if (!confirm) return;
     try {
       await api.post("/auth/logout");
-      if (setAppUser) setAppUser(null);
-      navigate("/");
     } catch (err) {
       console.error("Erreur lors de la déconnexion:", err);
+    } finally {
+      try { localStorage.removeItem("musical_app_token"); } catch (e) {}
+      if (setAppUser) setAppUser(null);
+      navigate("/");
     }
   };
 
@@ -233,6 +235,7 @@ const Profile = ({ user: appUser, setUser: setAppUser }) => {
     try {
       const res = await api.delete("/users/profile");
       if (res.data.success) {
+        try { localStorage.removeItem("musical_app_token"); } catch (e) {}
         alert("Votre compte a été supprimé.");
         if (setAppUser) setAppUser(null);
         navigate("/");

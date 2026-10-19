@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 
-const Register = () => {
+const Register = ({ setUser }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +22,15 @@ const Register = () => {
       });
 
       if (response.data.success) {
-        navigate("/login");
+        if (response.data.token) {
+          localStorage.setItem("musical_app_token", response.data.token);
+        }
+        if (response.data.user && setUser) {
+          setUser(response.data.user);
+          navigate("/profile");
+        } else {
+          navigate("/login");
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de l'inscription");

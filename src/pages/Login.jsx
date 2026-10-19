@@ -20,6 +20,9 @@ const Login = ({ setUser }) => {
       });
 
       if (response.data.success) {
+        if (response.data.token) {
+          localStorage.setItem('musical_app_token', response.data.token);
+        }
         setUser(response.data.user);
         navigate("/profile");
       }

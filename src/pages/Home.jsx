@@ -265,10 +265,12 @@ const Home = ({ user, setUser }) => {
     if (isConfirmed) {
       try {
         await api.post('/auth/logout');
-        setUser(null); 
-        navigate('/'); 
       } catch (error) {
         console.error("Erreur lors de la déconnexion :", error);
+      } finally {
+        try { localStorage.removeItem('musical_app_token'); } catch (e) {}
+        setUser(null); 
+        navigate('/'); 
       }
     }
   };
