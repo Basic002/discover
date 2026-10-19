@@ -1,20 +1,246 @@
-/* On importe le moteur de Tailwind V4 */
+/* Importation du moteur Tailwind V4 */
 @import "tailwindcss";
 
-/* On injecte ta charte graphique Night Vibes directement ici */
+/* Charte graphique Emo Gothique & Aesthetic */
 @theme {
-  --color-night-bg: #0F172A;
-  --color-night-card: #1E293B;
-  --color-neon-violet: #8B5CF6;
-  --color-neon-cyan: #22D3EE;
-  --color-night-text: #94A3B8;
-  
-  --font-title: "Poppins", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --color-night-bg: #09090b;
+  --color-night-card: #121215;
+  --color-night-card-hover: #18181d;
+  --color-night-border: #27272a;
+  --color-night-text: #a1a1aa;
+  --color-night-muted: #71717a;
+
+  /* Teintes Emo / Gothique : Crimson, Blood Red, Velvet Plum */
+  --color-neon-violet: #be123c;
+  --color-neon-cyan: #e11d48;
+  --color-goth-crimson: #881337;
+  --color-goth-blood: #be123c;
+  --color-goth-ruby: #e11d48;
+  --color-goth-wine: #4c0519;
+  --color-goth-silver: #f4f4f5;
+
+  /* Typographies : Cinzel (Gothique élégant) + Inter (Sobre & moderne) */
+  --font-title: "Cinzel", "Playfair Display", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-goth: "Cinzel", serif;
+  --font-editorial: "Playfair Display", Georgia, serif;
 }
 
-/* Le style par défaut de ton corps de page */
+/* Style de base sombre et immersif */
 body {
-  background-color: var(--color-night-bg);
-  color: white;
+  background-color: #09090b;
+  color: #f4f4f5;
+  font-family: var(--font-body);
+  letter-spacing: -0.01em;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(136, 19, 55, 0.15), transparent),
+    radial-gradient(circle at 80% 80%, rgba(88, 28, 135, 0.05), transparent);
+  min-height: 100vh;
+}
+
+/* Scrollbar sobre & gothique */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #be123c;
+}
+
+/* Style sur mesure pour la carte Leaflet en Dark Noir */
+.leaflet-container {
+  background-color: #121215 !important;
+  font-family: var(--font-body) !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 400px !important;
+}
+
+/* Tuiles sombres & immersives Esri Dark Canvas */
+.goth-dark-tiles {
+  filter: brightness(0.82) contrast(1.22) saturate(0.7);
+  will-change: transform, opacity;
+}
+
+.goth-labels-tiles {
+  opacity: 0.88;
+  filter: contrast(1.1);
+  will-change: transform, opacity;
+}
+
+/* Badge de Cluster Émo-Gothique Haute Performance */
+.custom-goth-cluster {
+  background: transparent !important;
+  border: none !important;
+}
+
+.goth-cluster-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #881337, #121215 85%);
+  border: 2px solid #e11d48;
+  color: #f4f4f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.9), 0 0 15px rgba(225, 29, 72, 0.6);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.goth-cluster-badge:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.95), 0 0 25px rgba(225, 29, 72, 0.9);
+}
+
+.goth-cluster-badge span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* Customisation de la popup Leaflet */
+.leaflet-popup-content-wrapper {
+  background: rgba(18, 18, 21, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(225, 29, 72, 0.3) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.9), 0 0 20px rgba(136, 19, 55, 0.25) !important;
+  color: #f4f4f5 !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: #121215 !important;
+  border: 1px solid rgba(225, 29, 72, 0.3) !important;
+}
+
+.leaflet-popup-close-button {
+  color: #a1a1aa !important;
+  padding: 6px !important;
+  transition: color 0.2s ease !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #e11d48 !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px !important;
+  line-height: 1.4 !important;
+}
+
+/* Boutons de zoom Leaflet Dark Aesthetic */
+.leaflet-bar {
+  border: 1px solid #27272a !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7) !important;
+}
+
+.leaflet-bar a {
+  background-color: #121215 !important;
+  color: #f4f4f5 !important;
+  border-bottom: 1px solid #27272a !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 16px !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: #881337 !important;
+  color: #ffffff !important;
+}
+
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(9, 9, 11, 0.8) !important;
+  color: #71717a !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #a1a1aa !important;
+}
+
+/* Pin gothique personnalisé */
+.custom-goth-pin {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Tooltip émo-gothique discret au survol d'un pin */
+.goth-map-tooltip {
+  background: #121215 !important;
+  border: 1px solid #be123c !important;
+  color: #f4f4f5 !important;
+  font-family: var(--font-body) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 10px rgba(190, 18, 60, 0.3) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+.goth-map-tooltip::before {
+  border-top-color: #be123c !important;
+}
+
+/* Utilitaires spécifiques mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Zone sécurisée bas d'écran (iPhone notch & bar) */
+.safe-area-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+}
+
+/* Optimisation tactile globale */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+/* Responsive Leaflet sur mobile */
+@media (max-width: 640px) {
+  .leaflet-bar a {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 18px !important;
+  }
+  .leaflet-control-attribution {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }

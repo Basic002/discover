@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import axios from 'axios';
+import api from './api';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -20,13 +20,10 @@ function App() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        // Remplace l'URL par la route de ton API qui renvoie les infos du profil connecté
-        const response = await axios.get("http://localhost:5000/api/users/profile", {
-          withCredentials: true // Indispensable pour envoyer le cookie de session
-        });
+        const response = await api.get('/users/profile');
 
         if (response.data.success) {
-          setUser(response.data.user);
+          setUser(response.data.user || response.data.data);
         }
       } catch (error) {
         console.log("Aucune session active. Utilisateur non connecté.");
@@ -41,8 +38,21 @@ function App() {
   // 3. Écran d'attente pendant que React interroge le serveur
   if (loading) {
     return (
-      <div className="min-h-screen bg-night-bg flex items-center justify-center text-neon-violet font-title text-xl">
-        Chargement de Discover...
+      <div className="min-h-screen bg-night-bg flex flex-col items-center justify-center font-title text-center p-6 selection:bg-rose-950 selection:text-rose-200">
+        <div className="relative mb-6">
+          <div className="w-16 h-16 rounded-full border border-rose-900/40 flex items-center justify-center animate-spin [animation-duration:3s]">
+            <span className="text-rose-500 text-xl">✦</span>
+          </div>
+          <div className="absolute inset-0 rounded-full blur-xl bg-rose-600/10 pointer-events-none"></div>
+        </div>
+        <h1 className="text-2xl font-bold tracking-[0.25em] uppercase mb-2 inline-flex items-baseline">
+          <span className="text-zinc-100 font-title">DISC</span>
+          <span className="text-rose-600 font-title">OVER</span>
+          <span className="text-rose-500 text-sm ml-1 select-none">✦</span>
+        </h1>
+        <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 font-body">
+          Chargement de l'application...
+        </p>
       </div>
     );
   }
@@ -62,7 +72,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           
           {/* Favorites aura besoin de l'id de l'utilisateur pour requêter ses favoris */}
-          <Route path="/favorites" element={<Favorites user={user} />} />
+          <Route path="/favorites" element={<Favorites user={user} setUser={setUser} />} />
           
           {/* Profile a besoin d'afficher les infos (user) et de les mettre à jour/déconnecter (setUser) */}
           <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />

@@ -15,7 +15,6 @@ const Register = () => {
     setError("");
 
     try {
-      // On envoie name, email et password au back-end
       const response = await api.post("/auth/register", {
         name,
         email,
@@ -31,105 +30,97 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-night-bg font-body p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-night-bg font-body p-4 relative selection:bg-rose-950 selection:text-rose-200">
+      {/* Bouton retour */}
       <Link
         to="/"
-        className="absolute top-6 left-6 text-night-text hover:text-white transition-colors flex items-center gap-2"
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 text-zinc-500 hover:text-zinc-200 transition-colors flex items-center gap-2 text-xs uppercase tracking-widest font-mono p-2"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Retour à l'accueil
+        <span>←</span> Accueil
       </Link>
 
-      <div className="text-center mb-4">
-        <div className="text-4xl font-title font-bold tracking-wide">
-          <span className="text-neon-violet">Disc</span>
-          <span className="text-white">over</span>
-        </div>
+      {/* Titre Logo */}
+      <div className="text-center mb-6 mt-12 sm:mt-0">
+        <Link to="/" className="text-2xl sm:text-3xl font-title font-bold tracking-[0.22em] uppercase hover:opacity-90 transition-opacity inline-flex items-baseline">
+          <span className="text-zinc-100 font-title">DISC</span>
+          <span className="text-rose-600 font-title">OVER</span>
+          <span className="text-rose-500 text-sm ml-1 select-none">✦</span>
+        </Link>
       </div>
 
-      <div className="w-full max-w-md bg-night-card rounded-2xl shadow-2xl p-8 border border-slate-800">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-title font-bold text-white mb-2">
-            Créer un compte
+      {/* Carte Inscription */}
+      <div className="w-full max-w-md bg-[#121215]/95 backdrop-blur-xl rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(190,18,60,0.1)] p-5 sm:p-8 border border-zinc-800/80">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-title font-bold text-zinc-100 mb-1.5 tracking-wide uppercase">
+            Créer un Compte
           </h1>
-          <p className="text-night-text">
-            Rejoignez-nous pour sauvegarder vos événements.
+          <p className="text-zinc-400 text-xs tracking-wider font-light">
+            Rejoignez notre communauté et gardez trace de vos dates live.
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-400 rounded-lg text-sm text-center">
+          <div className="mb-5 p-3 bg-rose-950/40 border border-rose-900/60 text-rose-300 rounded-lg text-xs text-center font-medium">
             {error}
           </div>
         )}
 
-        <form className="space-y-5" onSubmit={handleRegister}>
+        <form className="space-y-4" onSubmit={handleRegister}>
           <div>
-            <label className="block text-sm font-medium text-night-text mb-1">
-              Nom d'utilisateur*
+            <label className="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
+              Pseudonyme
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Votre nom"
-              className="w-full bg-night-bg border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-violet transition-colors placeholder-slate-600"
+              placeholder="Votre nom d'utilisateur"
+              className="w-full bg-[#09090b] border border-zinc-800 rounded-xl px-4 py-3 text-base sm:text-sm text-zinc-100 focus:outline-none focus:border-rose-800/80 focus:ring-1 focus:ring-rose-900/40 transition-all placeholder-zinc-600 font-body"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-night-text mb-1">
-              Adresse email*
+            <label className="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
+              Adresse email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="exemple@musique.com"
-              className="w-full bg-night-bg border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-violet transition-colors placeholder-slate-600"
+              placeholder="votre.email@exemple.com"
+              className="w-full bg-[#09090b] border border-zinc-800 rounded-xl px-4 py-3 text-base sm:text-sm text-zinc-100 focus:outline-none focus:border-rose-800/80 focus:ring-1 focus:ring-rose-900/40 transition-all placeholder-zinc-600 font-body"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-night-text mb-1">
-              Mot de passe*
+            <label className="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
+              Mot de passe
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-night-bg border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-violet transition-colors placeholder-slate-600"
+              placeholder="••••••••••••"
+              className="w-full bg-[#09090b] border border-zinc-800 rounded-xl px-4 py-3 text-base sm:text-sm text-zinc-100 focus:outline-none focus:border-rose-800/80 focus:ring-1 focus:ring-rose-900/40 transition-all placeholder-zinc-600 font-body"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-neon-cyan hover:bg-cyan-500 text-slate-900 font-title font-bold py-3 rounded-lg mt-6 transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]"
+            className="w-full bg-gradient-to-r from-rose-950 via-rose-900 to-rose-950 hover:from-rose-900 hover:to-rose-800 text-rose-100 border border-rose-800/60 hover:border-rose-600 font-title font-bold tracking-[0.2em] uppercase py-3.5 sm:py-3 rounded-xl text-xs mt-6 transition-all shadow-[0_0_15px_rgba(190,18,60,0.25)] hover:shadow-[0_0_25px_rgba(225,29,72,0.45)] cursor-pointer"
           >
-            S'inscrire
+            Créer mon compte
           </button>
         </form>
 
-        <div className="mt-6 text-center text-night-text text-sm">
+        <div className="mt-6 pt-5 border-t border-zinc-800/60 text-center text-zinc-400 text-xs">
           Déjà un compte ?{" "}
           <Link
             to="/login"
-            className="text-neon-violet hover:underline font-medium"
+            className="text-rose-400 hover:text-rose-300 hover:underline font-medium transition-colors"
           >
             Se connecter
           </Link>

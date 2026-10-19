@@ -7,11 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        'night-bg': '#0F172A',
-        'night-card': '#1E293B',
-        'neon-violet': '#8B5CF6',
-        'neon-cyan': '#22D3EE',
-        'night-text': '#94A3B8',
+        'night-bg': '#09090b',
+        'night-card': '#121215',
+        'night-border': '#27272a',
+        'neon-violet': '#be123c',
+        'neon-cyan': '#e11d48',
+        'night-text': '#a1a1aa',
+        'goth-crimson': '#881337',
+        'goth-blood': '#be123c',
+        'goth-ruby': '#e11d48',
+        'goth-silver': '#f4f4f5',
+        'goth-dark': '#09090b',
+      },
+      fontFamily: {
+        title: ['Cinzel', 'Playfair Display', 'Georgia', 'serif'],
+        body: ['Inter', 'sans-serif'],
+        goth: ['Cinzel', 'serif'],
+        editorial: ['Playfair Display', 'Georgia', 'serif'],
       },
     },
   },
