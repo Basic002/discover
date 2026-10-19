@@ -60,14 +60,13 @@ function App() {
     );
   }
 
-  // Détection automatique du chemin de base (Racine, sous-dossier GitHub Pages ou domaine personnalisé)
-  const knownRoutes = ['/login', '/register', '/profile', '/favorites', '/admin'];
-  const firstPathSegment = window.location.pathname.split('/')[1] || '';
-  const isKnownRoute = knownRoutes.some(route => window.location.pathname.startsWith(route));
-
-  const basename = (!firstPathSegment || isKnownRoute)
-    ? ''
-    : '/' + firstPathSegment;
+  // Détection explicite du chemin de base pour /discover
+  let basename = '';
+  if (window.location.pathname.startsWith('/discover')) {
+    basename = '/discover';
+  } else if (window.location.pathname.startsWith('/musical-app-frontend')) {
+    basename = '/musical-app-frontend';
+  }
 
   // 4. Rendu de l'application
   return (
