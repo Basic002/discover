@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <title>DISCOVER ✦ Live Music & Concerts</title>
     <script type="text/javascript">
-      // Redirection automatique des routes SPA GitHub Pages vers index.html
-      var pathSegmentsToKeep = 1;
+      // Redirection automatique des routes SPA GitHub Pages vers index.html pour /discover/
+      var pathname = window.location.pathname;
+      var pathSegmentsToKeep = (pathname.startsWith('/discover') || pathname.startsWith('/musical-app-frontend')) ? 1 : 0;
+
       var l = window.location;
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
