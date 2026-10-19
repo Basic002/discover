@@ -57,9 +57,14 @@ function App() {
     );
   }
 
+  // Détection automatique du chemin de base (GitHub Pages ou racine)
+  const basename = window.location.pathname.startsWith('/musical-app-frontend')
+    ? '/musical-app-frontend'
+    : '';
+
   // 4. Rendu de l'application
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <main className="min-h-screen bg-night-bg text-white">
         <Routes>
           {/* Home a besoin de savoir si on est connecté pour la Navbar */}
