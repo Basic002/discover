@@ -2,7 +2,7 @@
 
 > Interface web moderne, sombre et responsive pour la découverte et la géolocalisation de concerts en direct en France.
 
-[![Site en ligne](https://img.shields.io/badge/Site%20en%20ligne-GitHub%20Pages-rose?style=for-the-badge&logo=github)](https://basic002.github.io/musical-app-frontend/)
+[![Site en ligne](https://img.shields.io/badge/Site%20en%20ligne-GitHub%20Pages-rose?style=for-the-badge&logo=github)](https://basic002.github.io/discover/)
 [![React 19](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
@@ -12,7 +12,7 @@
 ## 🌐 Déploiement en Ligne
 
 L'application est automatiquement déployée sur **GitHub Pages** :
-👉 **[https://basic002.github.io/musical-app-frontend/](https://basic002.github.io/musical-app-frontend/)**
+👉 **[https://basic002.github.io/discover/](https://basic002.github.io/discover/)**
 
 ---
 
