@@ -60,10 +60,14 @@ function App() {
     );
   }
 
-  // Détection automatique du chemin de base (GitHub Pages ou racine)
-  const basename = window.location.pathname.startsWith('/musical-app-frontend')
-    ? '/musical-app-frontend'
-    : '';
+  // Détection automatique du chemin de base (Racine, sous-dossier GitHub Pages ou domaine personnalisé)
+  const knownRoutes = ['/login', '/register', '/profile', '/favorites', '/admin'];
+  const firstPathSegment = window.location.pathname.split('/')[1] || '';
+  const isKnownRoute = knownRoutes.some(route => window.location.pathname.startsWith(route));
+
+  const basename = (!firstPathSegment || isKnownRoute)
+    ? ''
+    : '/' + firstPathSegment;
 
   // 4. Rendu de l'application
   return (
