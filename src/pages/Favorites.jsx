@@ -33,8 +33,26 @@ const getGoogleCalendarUrl = (event) => {
 
 const Favorites = ({ user, setUser }) => {
   const navigate = useNavigate();
-  const [allEvents, setAllEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [allEvents, setAllEvents] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('musical_events_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('musical_events_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return false;
+      }
+    } catch (e) {}
+    return true;
+  });
   const [selectedConcert, setSelectedConcert] = useState(null);
   const [cleanupNotice, setCleanupNotice] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,6 +70,9 @@ const Favorites = ({ user, setUser }) => {
             return e.date >= todayStr;
           });
           setAllEvents(upcomingEvents);
+          try {
+            sessionStorage.setItem('musical_events_cache', JSON.stringify(upcomingEvents));
+          } catch (e) {}
         }
       } catch (err) {
         console.error("Erreur lors de la récupération des événements :", err);
