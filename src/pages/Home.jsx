@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import api from "../api";
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -197,8 +197,27 @@ const customGothMarker = L.divIcon({
 const Home = ({ user, setUser }) => {
   const navigate = useNavigate();
   
-  const [events, setEvents] = useState([]);
-  const [loadingEvents, setLoadingEvents] = useState(true);
+  // Initialisation instantanée depuis le cache de session navigateur pour un affichage en < 1ms
+  const [events, setEvents] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('musical_events_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
+  const [loadingEvents, setLoadingEvents] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('musical_events_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return false;
+      }
+    } catch (e) {}
+    return true;
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("Toute la France");
   const [sortBy, setSortBy] = useState("date-asc");
@@ -206,7 +225,7 @@ const Home = ({ user, setUser }) => {
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'events', 'map'
   const [mapFocusCoords, setMapFocusCoords] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const eventsPerPage = 12;
+  const [eventsPerPage, setEventsPerPage] = useState(24);
 
   // États responsive mobile
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -232,6 +251,13 @@ const Home = ({ user, setUser }) => {
             return e.date >= todayStr;
           });
           setEvents(eventsList);
+          
+          // Mise en cache dans le navigateur pour un affichage instantané lors des visites suivantes
+          try {
+            sessionStorage.setItem('musical_events_cache', JSON.stringify(eventsList));
+          } catch (storageErr) {
+            // Quota sessionStorage si dépassement
+          }
 
           // Nettoyage automatique des favoris orphelins (qui n'existent plus)
           if (user?.favorites?.length > 0 && eventsList.length > 0) {
@@ -325,57 +351,62 @@ const Home = ({ user, setUser }) => {
     }
   };
 
-  // Filtrage multi-critères (Recherche texte + Ville + Tri intelligent)
-  const filteredEvents = events.filter((event) => {
-    // Filtre de ville
-    if (selectedCity && selectedCity !== "Toute la France") {
+  // Filtrage multi-critères mémoïsé haute performance (Recherche texte + Ville + Tri intelligent)
+  const filteredEvents = useMemo(() => {
+    return events.filter((event) => {
+      // Filtre de ville
+      if (selectedCity && selectedCity !== "Toute la France") {
+        const cityName = (event.city || event._embedded?.venues?.[0]?.city?.name || "").toLowerCase();
+        if (!cityName.includes(selectedCity.toLowerCase())) return false;
+      }
+      // Filtre textuel
+      if (!searchTerm.trim()) return true;
+      const term = searchTerm.toLowerCase().trim();
+      const eventName = (event.name || event.title || "").toLowerCase();
+      const venueName = (event.venue || event._embedded?.venues?.[0]?.name || "").toLowerCase();
       const cityName = (event.city || event._embedded?.venues?.[0]?.city?.name || "").toLowerCase();
-      if (!cityName.includes(selectedCity.toLowerCase())) return false;
-    }
-    // Filtre textuel
-    if (!searchTerm.trim()) return true;
-    const term = searchTerm.toLowerCase().trim();
-    const eventName = (event.name || event.title || "").toLowerCase();
-    const venueName = (event.venue || event._embedded?.venues?.[0]?.name || "").toLowerCase();
-    const cityName = (event.city || event._embedded?.venues?.[0]?.city?.name || "").toLowerCase();
-    const dateStr = (event.date || "").toLowerCase();
-    return eventName.includes(term) || venueName.includes(term) || cityName.includes(term) || dateStr.includes(term);
-  }).sort((a, b) => {
-    if (sortBy === "date-asc") {
-      const da = a.date || "9999-99-99";
-      const db = b.date || "9999-99-99";
-      return da.localeCompare(db);
-    }
-    if (sortBy === "date-desc") {
-      const da = a.date || "0000-00-00";
-      const db = b.date || "0000-00-00";
-      return db.localeCompare(da);
-    }
-    if (sortBy === "name-asc") {
-      return (a.name || "").localeCompare(b.name || "");
-    }
-    if (sortBy === "name-desc") {
-      return (b.name || "").localeCompare(a.name || "");
-    }
-    if (sortBy === "city-asc") {
-      const ca = a.city || a._embedded?.venues?.[0]?.city?.name || "";
-      const cb = b.city || b._embedded?.venues?.[0]?.city?.name || "";
-      return ca.localeCompare(cb);
-    }
-    return 0;
-  });
+      const dateStr = (event.date || "").toLowerCase();
+      return eventName.includes(term) || venueName.includes(term) || cityName.includes(term) || dateStr.includes(term);
+    }).sort((a, b) => {
+      if (sortBy === "date-asc") {
+        const da = a.date || "9999-99-99";
+        const db = b.date || "9999-99-99";
+        return da.localeCompare(db);
+      }
+      if (sortBy === "date-desc") {
+        const da = a.date || "0000-00-00";
+        const db = b.date || "0000-00-00";
+        return db.localeCompare(da);
+      }
+      if (sortBy === "name-asc") {
+        return (a.name || "").localeCompare(b.name || "");
+      }
+      if (sortBy === "name-desc") {
+        return (b.name || "").localeCompare(a.name || "");
+      }
+      if (sortBy === "city-asc") {
+        const ca = a.city || a._embedded?.venues?.[0]?.city?.name || "";
+        const cb = b.city || b._embedded?.venues?.[0]?.city?.name || "";
+        return ca.localeCompare(cb);
+      }
+      return 0;
+    });
+  }, [events, selectedCity, searchTerm, sortBy]);
 
-  // Calculs de pagination
+  // Calculs de pagination dynamique
   const totalPages = Math.max(1, Math.ceil(filteredEvents.length / eventsPerPage));
-  const paginatedEvents = filteredEvents.slice(
-    (currentPage - 1) * eventsPerPage,
-    currentPage * eventsPerPage
-  );
+  const paginatedEvents = useMemo(() => {
+    if (eventsPerPage >= filteredEvents.length) return filteredEvents;
+    return filteredEvents.slice(
+      (currentPage - 1) * eventsPerPage,
+      currentPage * eventsPerPage
+    );
+  }, [filteredEvents, currentPage, eventsPerPage]);
 
-  // Réinitialiser la page à 1 lors d'une nouvelle recherche ou changement d'onglet
+  // Réinitialiser la page à 1 lors d'une nouvelle recherche ou changement d'onglet / pagination
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCity, sortBy, activeTab]);
+  }, [searchTerm, selectedCity, sortBy, activeTab, eventsPerPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
@@ -819,6 +850,24 @@ const Home = ({ user, setUser }) => {
                 </select>
               </div>
 
+              {/* Sélecteur de pagination : Afficher par lot ou Tout afficher */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 hidden sm:inline">
+                  Afficher :
+                </span>
+                <select
+                  value={eventsPerPage}
+                  onChange={(e) => setEventsPerPage(Number(e.target.value))}
+                  className="bg-[#121215] border border-zinc-800 text-zinc-300 text-xs font-mono rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-rose-800 cursor-pointer"
+                  title="Nombre de concerts affichés par page"
+                >
+                  <option value={24}>24 / page</option>
+                  <option value={48}>48 / page</option>
+                  <option value={96}>96 / page</option>
+                  <option value={999999}>✦ Tout afficher ({filteredEvents.length})</option>
+                </select>
+              </div>
+
               <span className="text-xs uppercase tracking-widest text-zinc-500 font-mono">
                 {filteredEvents.length} {filteredEvents.length > 1 ? "CONCERTS" : "CONCERT"}
               </span>
@@ -1007,6 +1056,14 @@ const Home = ({ user, setUser }) => {
                     Suiv. →
                   </button>
                 </div>
+              </div>
+            )}
+
+            {totalPages <= 1 && filteredEvents.length > 0 && (
+              <div className="pt-4 pb-8 border-t border-zinc-800/80 text-center">
+                <p className="text-xs font-mono text-zinc-500">
+                  ✦ Tous les <span className="text-rose-400 font-semibold">{filteredEvents.length}</span> concerts sont affichés.
+                </p>
               </div>
             )}
             </>
